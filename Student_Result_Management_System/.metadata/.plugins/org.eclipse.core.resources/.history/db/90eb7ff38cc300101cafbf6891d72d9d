@@ -1,0 +1,45 @@
+package proj;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
+
+public class Student_Result_Management_System {
+
+	public static void main(String[] args) {
+	   String url = "jdbc:mysql://localhost:3306/users";
+        String user = "root";
+        String pwd = "Paras@06";
+        String selectemployee = "Select * from employee";
+        String createtable = "create table employee (id int primary key auto_increment,name varchar(20),department varchar(20))";
+        String insertdata = "insert into employee(name,department) values('Rachit','CSE'),('Paras','IT'),('Kratika','POWERBI')";
+        String droptable = "drop table emloyee";
+
+        try (Connection con = DriverManager.getConnection(url, user, pwd);
+             Statement stmt = con.createStatement()) {
+
+            System.out.println("✅ Connected to MySQL!");
+
+            try (ResultSet rs = stmt.executeQuery(selectemployee)) {
+                boolean found = false;
+                while (rs.next()) {
+                    found = true;
+                    System.out.println("id: " + rs.getInt("id"));
+                    System.out.println("name: " + rs.getString("name"));
+                    System.out.println("department: " + rs.getString("department"));
+                }
+                if (!found) {
+                    System.out.println("⚠ No records found in employee table!");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+	}
+
+}

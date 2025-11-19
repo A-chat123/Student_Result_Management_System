@@ -1,0 +1,69 @@
+package proj;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Student_Result_Management_System {
+
+    public static void main(String[] args) {
+
+        String url = "jdbc:mysql://localhost:3306/users";
+        String user = "root";
+        String pwd = "root";
+
+        String createtable = "CREATE TABLE IF NOT EXISTS employee (" +
+                             "id INT PRIMARY KEY AUTO_INCREMENT," +
+                             "name VARCHAR(20)," +
+                             "department VARCHAR(20))";
+
+        String insertdata = "INSERT INTO employee(name,department) VALUES" +
+                            "('Rachit','CSE')," +
+                            "('Paras','IT')," +
+                            "('Kratika','POWERBI')";
+
+        String selectemployee = "SELECT * FROM employee";
+
+        try {
+            // Load driver (optional in new versions but safe)
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL Driver not found!");
+            return;
+        }
+
+        try (Connection con = DriverManager.getConnection(url, user, pwd);
+             Statement stmt = con.createStatement()) {
+
+            System.out.println("✅ Connected to MySQL!");
+
+            // Create table
+            stmt.executeUpdate(createtable);
+
+            // Insert sample data
+            stmt.executeUpdate(insertdata);
+
+            // Select and display records
+            try (ResultSet rs = stmt.executeQuery(selectemployee)) {
+                boolean found = false;
+                while (rs.next()) {
+                    found = true;
+                    System.out.println("id: " + rs.getInt("id"));
+                    System.out.println("name: " + rs.getString("name"));
+                    System.out.println("department: " + rs.getString("department"));
+                    System.out.println("-------------------------");
+                }
+                if (!found) {
+                    System.out.println("⚠ No records found in employee table!");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
